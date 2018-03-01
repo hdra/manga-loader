@@ -83,6 +83,7 @@
 // @match *://*.komikstation.com/*/*/*
 // @match *://*.gmanga.me/mangas/*/*/*
 // @match *://mangadex.com/chapter/*
+// @match *://mangadex.org/chapter/*
 // @match *://merakiscans.com/*/*
 // @match *://biamamscans.com/read/*
 // @match *://read.lhtranslation.com/*.html
@@ -707,6 +708,30 @@ var implementations = [{
     return true;
   }
 }, {
+  name: 'mangadex.org',
+  match: "^https?://mangadex\\.org/chapter/[^/]+",
+  img: '#current_page',
+  next: function() {
+    return this._chap + ++this._page;
+  },
+  numpages: '#jump_page',
+  curpage: '#jump_page',
+  nextchap: function() {
+    var chapter = document.querySelector('#jump_chapter').selectedOptions[0].nextElementSibling;
+    return (chapter === null) ? false : (this._base + chapter.value + '/1');
+  },
+  prevchap: function() {
+    var chapter = document.querySelector('#jump_chapter').selectedOptions[0].previousElementSibling;
+    return (chapter === null) ? false : (this._base + chapter.value + '/1');
+  },
+  wait: function() {
+    var chapter = document.querySelector('#jump_chapter').selectedOptions[0].value;
+    this._base = 'https://mangadex.org/chapter/';
+    this._chap = this._base + chapter + '/';
+    this._page = document.querySelector('#jump_page').selectedOptions[0].value;
+    return true;
+  }
+}, {
   name: 'biamamscans.com',
   match: "^https?://biamamscans\\.com/read/.+", //nextchap and prevchap broken
   img: '.manga-image',
@@ -714,7 +739,7 @@ var implementations = [{
   numpages: '#page-select',
   curpage: '#page-select',
   nextchap: '#chapter-select',
-  prevchap: '#chapter-select' 
+  prevchap: '#chapter-select'
 }, {
   name: 'lhtranslation',
   match: "^https?://read.lhtranslation\\.com/read-.+",
